@@ -1,61 +1,46 @@
-// Get DOM elements
-const taskInput = document.getElementById('taskInput');
-const taskList = document.getElementById('taskList');
+function addTask(){
+    var a = document.getElementById("task-input").value;
+    console.log(a);
+    var taskItem = document.createElement("li");
+    taskItem.textContent=a;
+    taskItem.className="rounded-lg border-gray-200 bg-white p-6 shadow-md mt-2 flex flex-row justify-between";
 
-// Load tasks from local storage when the page is loaded
-window.onload = loadTasks;
 
-function addTask() {
-    const taskText = taskInput.value.trim();
+     // DELETE BUTTON
 
-    if (taskText) {
-        const newTask = {
-            text: taskText,
-            id: Date.now(),
-        };
+     var deletebtn=document.createElement("button");
 
-        appendTaskToList(newTask);
-        saveTasks();
-        taskInput.value = '';
-    }
+     //Set button name to delete
+     deletebtn.textContent="Delete";
+
+     //set class name for the button (styling)
+
+     deletebtn.className='bg-red-500 text-white px-4 py-2 rounded-full';
+
+     // Adding event listener
+
+     deletebtn.addEventListener('click',function(){
+        taskItem.remove()
+        var taskCount=document.getElementById('task-list').childElementCount;
+        totalTask.textContent=taskCount;
+     });
+
+
+     var totalTask=document.getElementById('total-task');
+     var taskCount=document.getElementById('task-list').childElementCount
+     totalTask.textContent=taskCount + 1;
+
+     //append delete buttton
+
+     taskItem.appendChild(deletebtn);
+
+    document.getElementById("task-list").appendChild(taskItem);
+
+       
+
 }
 
-function removeTask(button) {
-    const task = button.parentNode;
-    task.parentNode.removeChild(task);
-    removeTaskFromLocalStorage(parseInt(task.getAttribute('data-id')));
-}
-
-function appendTaskToList({ text, id }) {
-    const newTask = document.createElement('li');
-    newTask.textContent = text;
-    newTask.setAttribute('data-id', id);
-
-    const deleteButton = document.createElement('button');
-    deleteButton.textContent = 'Delete';
-    deleteButton.className = 'bg-red-500 hover:bg-red-700 text-white font-medium text-md py-2 px-4 rounded';
-    deleteButton.onclick = () => removeTask(deleteButton);
-
-    newTask.appendChild(deleteButton);
-    taskList.appendChild(newTask);
-}
-
-function saveTasks() {
-    const tasks = Array.from(taskList.children).map(task => ({
-        text: task.textContent,
-        id: parseInt(task.getAttribute('data-id')),
-    }));
-
-    localStorage.setItem('tasks', JSON.stringify(tasks));
-}
-
-function loadTasks() {
-    const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
-    tasks.forEach(appendTaskToList);
-}
-
-function removeTaskFromLocalStorage(taskId) {
-    const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
-    const updatedTasks = tasks.filter(task => task.id !== taskId);
-    localStorage.setItem('tasks', JSON.stringify(updatedTasks));
+function deleteAll(){
+    document.getElementById('task-list').innerHTML='';
+    document.getElementById('total-task').innerHTML='0';
 }
